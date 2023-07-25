@@ -4,9 +4,14 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Product } from '@/cmponents/types/products';
 
 const CART_STORAGE_KEY = 'cart';
+
 const getInitialCartFromLocalStorage = (): Product[] => {
-  const cartJson = window.localStorage.getItem(CART_STORAGE_KEY) || '[]';
-  return JSON.parse(cartJson) as Product[];
+  if (typeof window !== 'undefined') {
+    const cartJson = window.localStorage.getItem(CART_STORAGE_KEY) || '[]';
+    return JSON.parse(cartJson) as Product[];
+  } else {
+    return [];
+  }
 };
 
 const cartSlice = createSlice({
