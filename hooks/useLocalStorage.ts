@@ -9,8 +9,12 @@ import { useDispatch, useSelector } from 'react-redux';
 const CART_STORAGE_KEY = 'cart';
 
 const getInitialCartFromLocalStorage = (): Product[] => {
-  const cartJson = window.localStorage.getItem(CART_STORAGE_KEY) || '[]';
-  return JSON.parse(cartJson) as Product[];
+  if (typeof window !== 'undefined') {
+    const cartJson = window.localStorage.getItem(CART_STORAGE_KEY) || '[]';
+    return JSON.parse(cartJson) as Product[];
+  } else {
+    return [];
+  }
 };
 
 const useCart = (): {
@@ -25,9 +29,11 @@ const useCart = (): {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
-    const price = cart.reduce((total, item) => total + item.price * item.quantity, 0);
-    setTotalPrice(price);
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+      const price = cart.reduce((total, item) => total + item.price * item.quantity, 0);
+      setTotalPrice(price);
+    }
   }, [cart]);
 
   const handleAddToCart = (item: Product): void => {
